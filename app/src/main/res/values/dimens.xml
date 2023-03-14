@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_gap">8dp</dimen>
+    <dimen name="med_gap">24dp</dimen>
+    <dimen name="large_gap">48dp</dimen>
+    <dimen name="touch_size">56dp</dimen>
+</resources>
