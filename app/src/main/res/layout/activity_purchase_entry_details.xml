@@ -29,6 +29,6 @@
             android:id="@+id/purchaseNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Note" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
