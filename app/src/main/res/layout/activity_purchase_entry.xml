@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".PurchaseEntry">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/med_gap"
-        android:paddingVertical="@dimen/med_gap">
+        android:paddingVertical="@dimen/med_gap"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-16dp">
 
         <RadioGroup
             android:id="@+id/typeRadioGroup"
@@ -65,7 +67,7 @@
         <Button
             android:id="@+id/addPhotoButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Take photo" />
 
         <Button
