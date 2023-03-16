@@ -66,7 +66,13 @@
             android:id="@+id/addPhotoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="capturePhotoResult"
             android:text="Take photo" />
+
+        <ImageView
+            android:id="@+id/purchaseEntryImage"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" />
 
         <Button
             android:id="@+id/addEntry"

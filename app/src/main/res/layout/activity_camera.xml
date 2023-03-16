@@ -17,14 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="20dp"
-            android:layout_weight="1" />
+            android:layout_weight="9" />
 
         <Button
             android:id="@+id/captureCameraButton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:onClick="capturePhoto"
+            android:onClick="returnCapture"
             android:text="Capture" />
     </LinearLayout>
 

@@ -9,26 +9,45 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/med_gap"
         android:paddingVertical="@dimen/med_gap">
 
-        <TextView
-            android:id="@+id/purchaseAmount"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="$0.0" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/purchaseCurrency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/small_gap"
+                android:text="Currency"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/purchaseAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$0.0"
+                android:textSize="34sp" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/purchaseCurrency"
+            android:id="@+id/purchaseType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Currency" />
+            android:text="Type"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/purchaseNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Note" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

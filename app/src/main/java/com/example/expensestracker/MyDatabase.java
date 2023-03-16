@@ -41,7 +41,48 @@ public class MyDatabase {
         return cursor;
     }
 
+    public Cursor getIdData(int id) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        String[] columns = {Constants.UID, Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.NOTE};
+        String selection = Constants.UID + "='" + id + "'";
+        Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, null, null, null, null);
+        return cursor;
+    }
+
     // getIdData
+    public Purchase getDataID(int id) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String selection = "_id = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        String[] columns = {Constants.UID, Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.NOTE};
+        Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+
+        int idx1 = cursor.getColumnIndex(Constants.AMOUNT);
+        int idx2 = cursor.getColumnIndex(Constants.CURRENCY);
+        int idx3 = cursor.getColumnIndex(Constants.TYPE);
+        int idx4 = cursor.getColumnIndex(Constants.NOTE);
+
+        Purchase entry = new Purchase();
+
+        if (cursor.moveToFirst()) {
+            String entryAmount = cursor.getString(idx1);
+            String entryCurrency = cursor.getString(idx2);
+            String entryType = cursor.getString(idx3);
+            String entryNote = cursor.getString(idx4);
+
+            entry = new Purchase(id, entryAmount,entryCurrency, Integer.parseInt(entryType), entryNote);
+        }
+
+//        if (cursor != null) cursor.moveToFirst();
+//        Purchase entry = new Purchase(Integer.parseInt(cursor.getString(0)),
+//                cursor.getString(idx1), //amount
+//                cursor.getString(idx2), //currency
+//                Integer.parseInt(cursor.getString(idx3)), //type
+//                cursor.getString(idx4)  //note
+//                );
+        cursor.close();
+        return entry;
+    }
 
 
     public String getSelectedData(String type)  //query button
@@ -76,7 +117,6 @@ public class MyDatabase {
     public List<Purchase> getAllPurchases() {
         List<Purchase> purchaseList = new ArrayList<>();
         SQLiteDatabase db = helper.getWritableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.DATABASE_NAME, null);
         String[] columns = {Constants.UID, Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.NOTE};
         Cursor cursor = db.query(Constants.TABLE_NAME, columns, null, null, null, null, null);
         while (cursor.moveToNext()) {

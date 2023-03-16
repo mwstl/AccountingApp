@@ -5,13 +5,15 @@ public class Purchase {
     private String currency;
     private String note;
     private String type;
-    private boolean isExpense;
+    private int isExpense;
+    private String imageURI;
 
-    public Purchase(double amount, String currency, String note, boolean isExpense) {
+    public Purchase(double amount, String currency, String note, int isExpense, String img) {
         this.amount = amount;
         this.currency = currency;
         this.note = note;
         this.isExpense = isExpense;
+        this.imageURI = img;
     }
 
     public Purchase(String amount, String currency, String type, String note) {
@@ -26,6 +28,8 @@ public class Purchase {
         this.type = type;
     }
 
+    public Purchase() {}
+
     public double getAmount() {
         return amount;
     }
@@ -38,10 +42,12 @@ public class Purchase {
         return note;
     }
 
-    public boolean isExpense() {
-        return isExpense;
-    }
+//    public int isExpense() {
+//        return isExpense;
+//    }
 
     public String getType() { return type; }
+
+    public String getImageURI() { return imageURI; }
 }
 

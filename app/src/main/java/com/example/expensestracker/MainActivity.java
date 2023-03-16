@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -47,14 +48,26 @@ public class MainActivity extends AppCompatActivity {
 
         for (Purchase entry : purchaseList) {
             double amt = entry.getAmount();
-            if (entry.getType() == "Expense") {
+            Log.d("ENTRY TYPE", "Type: " + entry.getType());
+            Log.d("ENTRY AMOUNT", "Amt: " + entry.getAmount());
+
+//            if (entry.getType() == "Expense") {
+//                Log.d("CURRENT POSITION", "Subtracting expense");
+//                totalBalance -= amt;
+//            } else if (entry.getType() == "Income") {
+//                Log.d("CURRENT POSITION", "Adding income");
+//                totalBalance += amt;
+//            }
+
+            if (entry.getType() == "Income") {
                 totalBalance -= amt;
-            } else if (entry.getType() == "Income") {
+            } else {
                 totalBalance += amt;
             }
         }
 
         String totalBalanceText = String.format(Locale.getDefault(), "%.2f", totalBalance);
         balanceTextView.setText(totalBalanceText);
+        Log.d("Balance", "Current balance: " + totalBalanceText);
     }
 }
