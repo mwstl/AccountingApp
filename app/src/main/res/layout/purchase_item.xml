@@ -20,7 +20,7 @@
             android:layout_marginRight="@dimen/small_gap"
             android:layout_weight="1"
             android:text="TextView"
-            android:textAlignment="textEnd" />
+            android:textAlignment="viewStart" />
 
         <TextView
             android:id="@+id/amountList"
