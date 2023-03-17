@@ -32,6 +32,13 @@ public class MyDatabase {
         return id;
     }
 
+    public void deleteData(int id) {
+        db = helper.getWritableDatabase();
+        String query = "DELETE FROM " + Constants.TABLE_NAME + " WHERE "
+                + Constants.UID + " = '" + id + "'";
+        db.execSQL(query);
+    }
+
     public Cursor getData()
     {
         SQLiteDatabase db = helper.getWritableDatabase();

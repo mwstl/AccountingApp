@@ -1,11 +1,16 @@
 package com.example.expensestracker;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +24,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public ArrayList<String> list;
     Context context;
+    MyDatabase db;
 
-    public CustomAdapter(ArrayList<String> list) {
+    public CustomAdapter(ArrayList<String> list, Context context) {
         this.list = list;
+        this.context = context;
+        db = new MyDatabase(context);
     }
 
     @Override
@@ -37,19 +45,61 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         holder.amountTextView.setText(results[0]);
         holder.currencyTextView.setText(results[1]);
         holder.typeTextView.setText(results[2]);
+        int id = Integer.parseInt(results[4]);
+        int purchase = holder.getAdapterPosition();
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int purchase = holder.getAdapterPosition();
                 Log.d("PURCHASE POSITION", "Position: " + purchase);
                 Intent i = new Intent(view.getContext(), PurchaseEntryDetails.class);
-                i.putExtra("purchase_id", purchase);
+                i.putExtra("purchase_id", id);
                 view.getContext().startActivity(i);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+                builder.setMessage("Do you want to delete?");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        Toast.makeText(context, "Success deletion", Toast.LENGTH_SHORT).show();
+
+                        list.remove(purchase);
+                        notifyItemRemoved(purchase);
+                        db.deleteData(id);
+                        notifyDataSetChanged();
+                        Log.d("DELETION", "SUCCESSFULLY DELETED id = " + id);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        Log.d("CANCEL DELETION", "CANCELLED DELETION");
+                        Toast.makeText(context, "Cancel deletion", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
             }
         });
     }
 
+//    private void result(Cursor c, int id) {
+//        if (c.getCount() > 0) {
+//            db.delete(Constants.TABLE_NAME, "_id=?", new String[]{String.valueOf(id)});
+//            notifyDataSetChanged();
+//        } else {
+//            Toast.makeText(context, "Error removing item", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     @Override
     public int getItemCount() {

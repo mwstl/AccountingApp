@@ -27,7 +27,7 @@ public class PurchaseEntryDetails extends AppCompatActivity {
         typeTextView = findViewById(R.id.purchaseType);
         noteTextView = findViewById(R.id.purchaseNote);
 
-        purchaseID = getIntent().getIntExtra("purchase_id", 1) +1;
+        purchaseID = getIntent().getIntExtra("purchase_id", 1);
         Log.d("PURCHASE ID", "ID: " + purchaseID);
         db = new MyDatabase(this);
         Cursor cursor;

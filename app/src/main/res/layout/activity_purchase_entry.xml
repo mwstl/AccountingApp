@@ -24,6 +24,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:checked="true"
                 android:text="Expense" />
 
             <RadioButton
@@ -68,6 +69,13 @@
             android:layout_height="wrap_content"
             android:onClick="capturePhotoResult"
             android:text="Take photo" />
+
+        <Button
+            android:id="@+id/selectPhotoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="selectPhotoResult"
+            android:text="Select photo" />
 
         <ImageView
             android:id="@+id/purchaseEntryImage"

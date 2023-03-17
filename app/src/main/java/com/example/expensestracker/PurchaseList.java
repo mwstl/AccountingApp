@@ -47,6 +47,7 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
         int index2 = cursor.getColumnIndex(Constants.CURRENCY);
         int index3 = cursor.getColumnIndex(Constants.TYPE);
         int index4 = cursor.getColumnIndex(Constants.NOTE);
+        int index5 = cursor.getColumnIndex(Constants.UID);
 
         ArrayList<String> mArrayList = new ArrayList<String>();
         cursor.moveToFirst();
@@ -56,12 +57,13 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
             String currency = cursor.getString(index2);
             String type = cursor.getString(index3);
             String note = cursor.getString(index4);
-            String s = amount +"," + currency + "," + type + "," + note;
+            String id = cursor.getString(index5);
+            String s = amount +"," + currency + "," + type + "," + note + "," + id;
             mArrayList.add(s);
             cursor.moveToNext();
         }
 
-        customAdapter = new CustomAdapter(mArrayList);
+        customAdapter = new CustomAdapter(mArrayList, this);
         myRecycler.setAdapter(customAdapter);
 
         // use a linear layout manager
@@ -79,4 +81,5 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
                 "row " + (1+position) + ":  " + purchaseAmount.getText() +" "+purchaseCurrency.getText() + " " + purchaseType.getText(),
                 Toast.LENGTH_LONG).show();
     }
+
 }

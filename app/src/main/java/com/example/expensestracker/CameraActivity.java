@@ -191,6 +191,11 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         finish();
     }
 
+    public void selectImage(View v) {
+        Intent selectedImage = new Intent(Intent.ACTION_GET_CONTENT);
+
+    }
+
     private boolean allPermissionsGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
