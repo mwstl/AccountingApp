@@ -3,6 +3,7 @@ package com.example.expensestracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,16 +18,29 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private TextView balanceTextView;
-    private Button addPurchaseButton, viewPurchasesButton;
-
+    private Button addPurchaseButton, viewPurchasesButton,logoutBtn;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        editor = preferences.edit();
 
         balanceTextView = findViewById(R.id.balanceTextView);
         addPurchaseButton = findViewById(R.id.add_purchase_button);
         viewPurchasesButton = findViewById(R.id.view_purchases_button);
+        logoutBtn = findViewById(R.id.logoutBtn);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.clear();
+                editor.commit();
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         calculateBalance();
     }
