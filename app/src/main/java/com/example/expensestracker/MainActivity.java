@@ -42,7 +42,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        calculateBalance();
+    }
+
+    @Override
+    public void onResume() {
         calculateBalance();
+        super.onResume();
     }
 
     public void addPurchase(View v) {

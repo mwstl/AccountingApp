@@ -109,6 +109,7 @@ public class PurchaseEntry extends AppCompatActivity {
 
             if (requestCode == LAUNCH_CAMERA_ACTIVITY) {
                 if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "Captured photo", Toast.LENGTH_SHORT).show();
                     photoURI = data.getStringExtra("photo");
                 }
             } else if (requestCode == SELECT_IMAGE) {

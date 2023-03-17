@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
         preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         editor = preferences.edit();
 
-
         if(preferences.contains("saved_name")){
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
