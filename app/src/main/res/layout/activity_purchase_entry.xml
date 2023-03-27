@@ -3,15 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#C7DBF8"
     tools:context=".PurchaseEntry">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#C7DBF8"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/med_gap"
         android:paddingVertical="@dimen/med_gap">
+
+        <ImageView
+            android:id="@+id/homeClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/circleshape"
+            app:srcCompat="@drawable/baseline_home_24"
+
+            />
+        <ImageView
+            android:id="@+id/blackClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/circleshape"
+            app:srcCompat="@drawable/baseline_close_24"
+            android:translationY="-34dp"
+            android:translationX="330dp"
+            />
 
         <RadioGroup
             android:id="@+id/typeRadioGroup"
@@ -67,6 +89,7 @@
             android:id="@+id/addPhotoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#CCA887"
             android:onClick="capturePhotoResult"
             android:text="Take photo" />
 
@@ -74,6 +97,7 @@
             android:id="@+id/selectPhotoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#CCA887"
             android:onClick="selectPhotoResult"
             android:text="Select photo" />
 
@@ -86,8 +110,11 @@
             android:id="@+id/addEntry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#CCA887"
             android:onClick="addEntry"
             android:text="Add Entry" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

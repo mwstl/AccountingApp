@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#C7DBF8"
     tools:context=".PurchaseEntryDetails">
 
     <LinearLayout
@@ -13,6 +14,30 @@
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/med_gap"
         android:paddingVertical="@dimen/med_gap">
+
+        <ImageView
+            android:id="@+id/homeClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/circleshape"
+            app:srcCompat="@drawable/baseline_home_24"
+            android:translationY="-260dp"
+            android:translationX="-164sp"
+
+            />
+        <ImageView
+            android:id="@+id/blackClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/circleshape"
+            app:srcCompat="@drawable/baseline_close_24"
+            android:translationX="165sp"
+            android:translationY="-295dp"
+
+            />
+
 
         <LinearLayout
             android:layout_width="match_parent"

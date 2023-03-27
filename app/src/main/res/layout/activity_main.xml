@@ -9,8 +9,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#C7DBF8"
         android:orientation="vertical"
         android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/homeClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/circleshape"
+            app:srcCompat="@drawable/baseline_home_24"
+
+            />
+        <ImageView
+            android:id="@+id/blackClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/circleshape"
+            app:srcCompat="@drawable/baseline_close_24"
+            android:translationY="-34dp"
+            android:translationX="345dp"
+            />
 
         <TextView
             android:id="@+id/balance_text_view"
@@ -18,34 +39,62 @@
             android:layout_height="wrap_content"
             android:text="@string/default_balance_text"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:translationY="30dp" />
 
         <TextView
             android:id="@+id/balanceTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="34sp" />
+            android:textSize="34sp"
+            android:translationY="30dp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_purchase_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/baseline_pen_24"
+            android:drawablePadding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:onClick="addPurchase"
-            android:text="Add Purchase" />
+            android:text="Purchase"
+            android:translationX="228dp"
+            android:translationY="450dp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/view_purchases_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:onClick="viewPurchases"
-            android:text="View All Purchases" />
+            android:text="View All Purchases"
+            />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/logoutBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout" />
+            android:background="@drawable/buttonshape"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Logout"
+            android:translationY="410dp"
+            android:translationX="230dp"
+            />
+
+
+
+        <!--        <ImageView-->
+<!--            android:id="@+id/imageView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:srcCompat="@drawable/baseline_logout_24" />-->
+
 
     </LinearLayout>
 
