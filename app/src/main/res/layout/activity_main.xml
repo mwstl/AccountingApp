@@ -51,6 +51,18 @@
             android:translationY="30dp" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/set_budget_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:drawablePadding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Set Your Budget"
+            android:translationX="0dp"
+            android:translationY="150dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_purchase_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +74,7 @@
             android:onClick="addPurchase"
             android:text="Purchase"
             android:translationX="228dp"
-            android:translationY="450dp" />
+            android:translationY="400dp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/view_purchases_button"
@@ -83,7 +95,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="Logout"
-            android:translationY="410dp"
+            android:translationY="360dp"
             android:translationX="230dp"
             />
 

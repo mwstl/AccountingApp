@@ -18,7 +18,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private TextView balanceTextView;
-    private Button addPurchaseButton, viewPurchasesButton,logoutBtn;
+    private Button addPurchaseButton, viewPurchasesButton,logoutBtn,budgetBtn;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     @Override
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         addPurchaseButton = findViewById(R.id.add_purchase_button);
         viewPurchasesButton = findViewById(R.id.view_purchases_button);
         logoutBtn = findViewById(R.id.logoutBtn);
+        budgetBtn = findViewById(R.id.set_budget_button);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+  budgetBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          Intent intent = new Intent(MainActivity.this,budgetActivity.class);
+          startActivity(intent);
+      }
+  });
 
 //        calculateBalance();
     }

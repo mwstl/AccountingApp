@@ -52,5 +52,18 @@ public class MyHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "exception onUpgrade() db", Toast.LENGTH_LONG).show();
         }
     }
+
+    public float getTotalExpense() {
+        String queryStr = "Select sum(amount) from " + Constants.TABLE_NAME + " GROUP BY " +Constants.TYPE + " HAVING Type = 'Expense'";
+//        Log.d("database", queryStr);
+        SQLiteDatabase db = this.getReadableDatabase();
+//        db.execSQL(queryStr);
+        Cursor cursor = db.rawQuery(queryStr, null);
+        if (cursor.moveToFirst()){
+            return cursor.getInt(0);
+        }else{
+            return -1;
+        }
+    }
 }
 
