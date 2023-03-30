@@ -13,6 +13,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -27,19 +29,25 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
     Button loginBtn;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-
     private SensorManager sensorManager;
     private Sensor lightSensor;
+    Thread vibrateThread;
+    private Vibrator vibrator;
     private WindowManager.LayoutParams layoutParams;
+    private Context context;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        context = this;
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         layoutParams = getWindow().getAttributes();
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        handler = new Handler();
 
        // Log.d("LoginActivity", "Logging enabled");
 
@@ -75,7 +83,11 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
                             Intent mainPage = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(mainPage);
                         } else {
-
+                            //error vibrate code
+//                            if (vibrateThread == null || !vibrateThread.isAlive()) {
+//                                vibrateThread = new Thread(new VibrateComputation(handler));
+//                                vibrateThread.start();
+//                            }
 
                             Intent registerPage = new Intent(LoginActivity.this, RegisterActivity.class);
                             startActivity(registerPage);
@@ -99,6 +111,7 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+        if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
     }
 
 
@@ -128,5 +141,27 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    private class VibrateComputation implements Runnable {
+        private Handler h;
+        public VibrateComputation(Handler ha) {
+            this.h = ha;
+        }
+
+        @Override
+        public void run() {
+            if (vibrator.hasVibrator()) {
+                vibrator.vibrate(100);
+            }
+
+            h.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Wrong username/password", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

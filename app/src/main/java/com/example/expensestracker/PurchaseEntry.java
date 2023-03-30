@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.util.Log;
@@ -29,12 +32,17 @@ public class PurchaseEntry extends AppCompatActivity {
     MyDatabase db;
     String photoURI;
 //    private StorageVolume storageVolume;
+    Thread vibrateThread;
+    private Vibrator vibrator;
+    private Context context;
+    private Handler handler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_entry);
+        context = this;
 
         entryAmount = (EditText) findViewById(R.id.amount_edit_text);
         entryCurrency = (EditText) findViewById(R.id.currency_edit_text);
@@ -42,6 +50,9 @@ public class PurchaseEntry extends AppCompatActivity {
         typeRadioGroup = (RadioGroup) findViewById(R.id.typeRadioGroup);
 
         db = new MyDatabase(this);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        handler = new Handler();
 
 //        StorageManager storageManager = (StorageManager) getSystemService(STORAGE_SERVICE);
 //        List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
@@ -55,6 +66,15 @@ public class PurchaseEntry extends AppCompatActivity {
         RadioButton selectedButton = findViewById(typeRadioGroup.getCheckedRadioButtonId());
         Log.d("RADIO BUTTON", "Chosen radio btn: " + findViewById(typeRadioGroup.getCheckedRadioButtonId()));
         String type = selectedButton.getText().toString();
+
+        //check if fields are not empty
+        if (amount.equals("") || amount.equals("-") || currency.equals("")) {
+            if (vibrateThread == null || !vibrateThread.isAlive()) {
+                vibrateThread = new Thread(new VibrateComputation(handler));
+                vibrateThread.start();
+            }
+            return;
+        }
 
         if (selectedButton == findViewById(R.id.expenseRadioButton)) {
             Log.d("SELECTED BUTTON", "Button: expenseRadioButton");
@@ -124,6 +144,34 @@ public class PurchaseEntry extends AppCompatActivity {
             }
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
+        super.onPause();
+    }
+
+    private class VibrateComputation implements Runnable {
+        private Handler h;
+        public VibrateComputation(Handler ha) {
+            this.h = ha;
+        }
+
+        @Override
+        public void run() {
+            if (vibrator.hasVibrator()) {
+                vibrator.vibrate(100);
+            }
+
+            h.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
