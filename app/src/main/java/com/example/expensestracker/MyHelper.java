@@ -23,7 +23,8 @@ public class MyHelper extends SQLiteOpenHelper {
                     Constants.CURRENCY + " TEXT, " +
                     Constants.TYPE + " TEXT, " +
                     Constants.NOTE + " TEXT, " +
-                    Constants.IMAGE + " TEXT);" ;
+                    Constants.IMAGE + " TEXT, " +
+                    Constants.DATE + " TEXT);" ;
 
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + Constants.TABLE_NAME;
 
@@ -54,14 +55,15 @@ public class MyHelper extends SQLiteOpenHelper {
     }
 
     public float getTotalExpense() {
+        // Retrieve total user spending from database query
         String queryStr = "Select sum(amount) from " + Constants.TABLE_NAME + " GROUP BY " +Constants.TYPE + " HAVING Type = 'Expense'";
-//        Log.d("database", queryStr);
         SQLiteDatabase db = this.getReadableDatabase();
-//        db.execSQL(queryStr);
         Cursor cursor = db.rawQuery(queryStr, null);
         if (cursor.moveToFirst()){
+            // Return total expense
             return cursor.getInt(0);
-        }else{
+        } else {
+            // Check in if-else statement in budget activity
             return -1;
         }
     }

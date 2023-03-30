@@ -114,6 +114,12 @@
             android:onClick="addEntry"
             android:text="Add Entry" />
 
+        <ImageView
+            android:id="@+id/photoView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/divider_horizontal_dim_dark" />
+
 
     </LinearLayout>
 

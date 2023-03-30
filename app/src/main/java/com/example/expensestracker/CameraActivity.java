@@ -58,30 +58,34 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     private Sensor lightSensor;
     float maxLight;
     Thread lightThread;
-
     String fileLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        // Context for runnable
         context = this;
 
+        // Reference to UI
         captureButton = findViewById(R.id.captureCameraButton);
         previewView = findViewById(R.id.previewView);
 
+        // Initialize sensors
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         lightSensor = (Sensor) sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         maxLight = lightSensor.getMaximumRange();
 
+        // Thread handler
         handler = new Handler();
 
+        // Check for camera permissions
+        // Camera code based on course demo app
         if (allPermissionsGranted()) {
             startCamera(); //start camera if permission has been granted by user
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
-
     }
 
     private Executor getExecutor() {
@@ -89,7 +93,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     }
 
     private void startCamera() {
-
+        // Camera code based on course demo app
         final ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 
         cameraProviderFuture.addListener(new Runnable() {
@@ -106,7 +110,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     }
 
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
-
+        // Camera code based on course demo app
         cameraProvider.unbindAll();
 
         Preview preview = new Preview.Builder()
@@ -150,12 +154,16 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     }
 
     public void capturePhotoButton(View v) {
+        // Camera code based on course demo app
         long timestamp = System.currentTimeMillis();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
 
-        fileLocation = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + timestamp + ".jpeg";
+        // Image file location and name
+//        fileLocation = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + timestamp + ".jpeg";
+        fileLocation = "file:///storage/emulated/0/Pictures/" + timestamp + ".jpeg";
+        // Debug help
 //        Log.d("IMAGE LOCATION", "Media Location: " + fileLocation);
 
         imageCapture.takePicture(
@@ -177,6 +185,9 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
                     }
                 }
         );
+
+        // Return to purchase entry activity
+        returnCapture();
     }
 
     public void finishCapture(View v) {
@@ -184,7 +195,8 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         startActivity(i);
     }
 
-    public void returnCapture(View v) {
+    public void returnCapture() {
+        // Return to purchase entry activity with file location string
         Intent returnIntent = new Intent();
         returnIntent.putExtra("photo", fileLocation);
         setResult(Activity.RESULT_OK, returnIntent);
@@ -193,10 +205,10 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
 
     public void selectImage(View v) {
         Intent selectedImage = new Intent(Intent.ACTION_GET_CONTENT);
-
     }
 
     private boolean allPermissionsGranted() {
+        // Camera code based on course demo app
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
@@ -207,6 +219,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
 
     @Override
     public void onResume() {
+        // Register light sensor
         super.onResume();
         if (lightSensor != null) {
             sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -215,6 +228,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
 
     @Override
     public void onPause() {
+        // Release light sensor and thread
         sensorManager.unregisterListener(this);
         if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
         super.onPause();
@@ -222,14 +236,17 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        // Check for light sensor changes
         if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
             float lightVal = event.values[0];
 
-            //if light is 1/10 of maximum brightness and not already alive
+            // If light is 1/10 of maximum brightness and not already alive
             if (lightVal < maxLight*0.0001) {
                 if (lightThread == null || !lightThread.isAlive()){
-                    Log.d("LIGHT_MAX", "MaxLight: " + maxLight);
-                    Log.d("LIGHT_VALS", "Light: " + lightVal);
+                    // Debug help
+//                    Log.d("LIGHT_MAX", "MaxLight: " + maxLight);
+//                    Log.d("LIGHT_VALS", "Light: " + lightVal);
+                    // Start thread
                     lightThread = new Thread(new LightComputation(handler));
                     lightThread.start();
                 }
@@ -241,7 +258,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     }   // onSensorChanged
 
     private class LightComputation implements Runnable {
-
+        // Notifies the user that scene may be too dark to take a suitable photo
         private Handler h;
         public LightComputation(Handler ha) { this.h = ha; }
 
@@ -255,7 +272,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
                 }
             });
 
-            //wait seconds
+            //wait a few seconds
             SystemClock.sleep(5000);
         }
     }

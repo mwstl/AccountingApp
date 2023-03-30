@@ -28,41 +28,53 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_list);
 
+        // Initialize recycler view and relevant database objects
         myRecycler = (RecyclerView) findViewById(R.id.purchaseRecyclerView);
         db = new MyDatabase(this);
         helper = new MyHelper(this);
 
         Cursor cursor;
 
+        // Check if there is a query
         if (getIntent().getBooleanExtra("query", false) != true) {
+            // If no queries, get all data
             cursor = db.getData();
             Log.d("QUERY_BOOLEAN", "Get data");
         } else {
+            // If user is searching for a query
             String selection = getIntent().getStringExtra("selection");
             cursor = db.getSelectedDataCursor(selection);
             Log.d("QUERY_BOOLEAN", "get Selected data");
         }
 
+        // Int to help identify cursor column indexes
         int index1 = cursor.getColumnIndex(Constants.AMOUNT);
         int index2 = cursor.getColumnIndex(Constants.CURRENCY);
         int index3 = cursor.getColumnIndex(Constants.TYPE);
         int index4 = cursor.getColumnIndex(Constants.NOTE);
         int index5 = cursor.getColumnIndex(Constants.UID);
+        int index6 = cursor.getColumnIndex(Constants.DATE);
 
+        // New arraylist
         ArrayList<String> mArrayList = new ArrayList<String>();
+        // Set database cursor to the first item
         cursor.moveToFirst();
 
+        // While cursor is not finished
         while (!cursor.isAfterLast()) {
+            // Retrieve data at current cursor position and add to array
             String amount = cursor.getString(index1);
             String currency = cursor.getString(index2);
             String type = cursor.getString(index3);
             String note = cursor.getString(index4);
             String id = cursor.getString(index5);
-            String s = amount +"," + currency + "," + type + "," + note + "," + id;
+            String date = cursor.getString(index6);
+            String s = amount +"," + currency + "," + type + "," + note + "," + id + "," + date;
             mArrayList.add(s);
             cursor.moveToNext();
         }
 
+        // Initialize recycler view adapter
         customAdapter = new CustomAdapter(mArrayList, this);
         myRecycler.setAdapter(customAdapter);
 
@@ -73,12 +85,14 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // If user clicks on recycler view item
         LinearLayout clickedRow = (LinearLayout) view;
         TextView purchaseAmount = (TextView) view.findViewById(R.id.amountList);
         TextView purchaseCurrency = (TextView) view.findViewById(R.id.currencyList);
         TextView purchaseType = (TextView) view.findViewById(R.id.typeList);
+        TextView purchaseDate = (TextView) view.findViewById(R.id.dateList);
         Toast.makeText(this,
-                "row " + (1+position) + ":  " + purchaseAmount.getText() +" "+purchaseCurrency.getText() + " " + purchaseType.getText(),
+                "row " + (1+position) + ":  " + purchaseAmount.getText() +" "+purchaseCurrency.getText() + " " + purchaseType.getText() + " " + purchaseDate.getText(),
                 Toast.LENGTH_LONG).show();
     }
 

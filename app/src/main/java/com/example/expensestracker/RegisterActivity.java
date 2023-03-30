@@ -19,12 +19,14 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // References to UI
         btnOK = findViewById(R.id.btnOK);
         btnCancel = findViewById(R.id.btnCancel);
 
         userName = findViewById(R.id.edRegisterUsername);
         password = findViewById(R.id.edRegisterPassword);
 
+        // Cancel button listener
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -32,14 +34,18 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Ok button listener
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (userName.getText().toString().equals("")){
-                    Toast.makeText(RegisterActivity.this, "User name can't be empty!", Toast.LENGTH_LONG).show();
-                }else if (password.getText().toString().equals("")){
-                    Toast.makeText(RegisterActivity.this, "Pasword can't be empty!", Toast.LENGTH_LONG).show();
-                }else{
+                    // Check if user name is empty
+                    Toast.makeText(RegisterActivity.this, "Username can't be empty!", Toast.LENGTH_LONG).show();
+                } else if (password.getText().toString().equals("")){
+                    // Check is password is empty
+                    Toast.makeText(RegisterActivity.this, "Password can't be empty!", Toast.LENGTH_LONG).show();
+                } else {
+                    // If username and password are filled, save info to sharedPrefs
                     SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     Toast.makeText(RegisterActivity.this, userName.getText().toString().length() + "", Toast.LENGTH_LONG).show();
@@ -49,7 +55,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Successful", Toast.LENGTH_LONG).show();
                     finish();
                 }
-
             }
         });
     }
