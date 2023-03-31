@@ -2,8 +2,11 @@ package com.example.expensestracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,12 +24,21 @@ public class MainActivity extends AppCompatActivity {
     private Button addPurchaseButton, viewPurchasesButton,logoutBtn,budgetBtn;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private MySensorEventListener msel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         editor = preferences.edit();
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         balanceTextView = findViewById(R.id.balanceTextView);
         addPurchaseButton = findViewById(R.id.add_purchase_button);
@@ -58,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         calculateBalance();
         super.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(msel);
     }
 
     public void addPurchase(View v) {

@@ -19,24 +19,14 @@
             android:id="@+id/homeClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="7dp"
             android:background="@drawable/circleshape"
             app:srcCompat="@drawable/baseline_home_24"
-            android:translationY="-260dp"
-            android:translationX="-164sp"
+            android:translationY="-275dp"
+            android:translationX="-160sp"
 
             />
-        <ImageView
-            android:id="@+id/blackClick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:background="@drawable/circleshape"
-            app:srcCompat="@drawable/baseline_close_24"
-            android:translationX="165sp"
-            android:translationY="-295dp"
 
-            />
 
 
         <LinearLayout

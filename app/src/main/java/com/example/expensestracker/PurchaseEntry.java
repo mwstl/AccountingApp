@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +19,7 @@ import android.os.storage.StorageVolume;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -37,6 +40,12 @@ public class PurchaseEntry extends AppCompatActivity {
     private Context context;
     private Handler handler;
 
+    private ImageView homeClick;
+
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private MySensorEventListener msel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +53,24 @@ public class PurchaseEntry extends AppCompatActivity {
         setContentView(R.layout.activity_purchase_entry);
         context = this;
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         entryAmount = (EditText) findViewById(R.id.amount_edit_text);
         entryCurrency = (EditText) findViewById(R.id.currency_edit_text);
         entryNote = (EditText) findViewById(R.id.note_edit_text);
         typeRadioGroup = (RadioGroup) findViewById(R.id.typeRadioGroup);
+        homeClick = (ImageView) findViewById((R.id.homeClick));
+
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(PurchaseEntry.this, MainActivity.class);
+                startActivity(homePage);
+            }
+        });
 
         db = new MyDatabase(this);
 
@@ -58,6 +81,8 @@ public class PurchaseEntry extends AppCompatActivity {
 //        List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
 //        storageVolume = storageVolumes.get(0);
     }
+
+
 
     public void addEntry(View v) {
         String amount = entryAmount.getText().toString();
@@ -146,9 +171,14 @@ public class PurchaseEntry extends AppCompatActivity {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onPause() {
+        sensorManager.unregisterListener(msel);
         if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
         super.onPause();
     }

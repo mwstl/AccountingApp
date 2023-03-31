@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginActivity extends AppCompatActivity implements SensorEventListener {
+public class LoginActivity extends AppCompatActivity {
 
 
     EditText name, psd;
@@ -31,11 +31,12 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
     SharedPreferences.Editor editor;
     private SensorManager sensorManager;
     private Sensor lightSensor;
+    private MySensorEventListener msel;
     Thread vibrateThread;
     private Vibrator vibrator;
-    private WindowManager.LayoutParams layoutParams;
     private Context context;
     private Handler handler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +46,14 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        layoutParams = getWindow().getAttributes();
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+       // layoutParams = getWindow().getAttributes();
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         handler = new Handler();
+
+
 
        // Log.d("LoginActivity", "Logging enabled");
 
@@ -104,44 +110,44 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
 
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(msel);
         if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
     }
 
 
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        float lightValue = event.values[0];
-
-        if (lightValue < 10) {
-            // Brightness is less than 10
-            layoutParams.screenBrightness = 0;
-            getWindow().setAttributes(layoutParams);
-            getWindow().getDecorView().setBackgroundColor(Color.rgb(132,147,169));
-        } else {
-//            if (lightValue >= 10 && lightValue < 100) {
-            // Brightness is greater than 10
-            layoutParams.screenBrightness = 1;
-            getWindow().setAttributes(layoutParams);
-            getWindow().getDecorView().setBackgroundColor(Color.rgb(199,219,248));
-        }
-//        else {
-//            // Brightness is greater than or equal to 100
-//            getWindow().getDecorView().setBackgroundColor(Color.YELLOW);
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//        float lightValue = event.values[0];
+//
+//        if (lightValue < 10) {
+//            // Brightness is less than 10
+//            layoutParams.screenBrightness = 0;
+//            getWindow().setAttributes(layoutParams);
+//            getWindow().getDecorView().setBackgroundColor(Color.rgb(132,147,169));
+//        } else {
+////            if (lightValue >= 10 && lightValue < 100) {
+//            // Brightness is greater than 10
+//            layoutParams.screenBrightness = 1;
+//            getWindow().setAttributes(layoutParams);
+//            getWindow().getDecorView().setBackgroundColor(Color.rgb(199,219,248));
 //        }
-   }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
+////        else {
+////            // Brightness is greater than or equal to 100
+////            getWindow().getDecorView().setBackgroundColor(Color.YELLOW);
+////        }
+//   }
+//
+//    @Override
+//    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+//
+//    }
 
     private class VibrateComputation implements Runnable {
         private Handler h;

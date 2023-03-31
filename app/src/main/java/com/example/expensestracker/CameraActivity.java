@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class CameraActivity extends AppCompatActivity implements SensorEventListener {
+public class CameraActivity extends AppCompatActivity {
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     PreviewView previewView;
@@ -56,6 +56,9 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     private Handler handler;
     private SensorManager sensorManager;
     private Sensor lightSensor;
+    private MySensorEventListener msel;
+
+    private ImageView homeClick;
     float maxLight;
     Thread lightThread;
 
@@ -70,9 +73,23 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         captureButton = findViewById(R.id.captureCameraButton);
         previewView = findViewById(R.id.previewView);
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        lightSensor = (Sensor) sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        maxLight = lightSensor.getMaximumRange();
+//        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+//        lightSensor = (Sensor) sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+//        maxLight = lightSensor.getMaximumRange();
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        homeClick = (ImageView) findViewById((R.id.homeClick));
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(CameraActivity.this, MainActivity.class);
+                startActivity(homePage);
+            }
+        });
 
         handler = new Handler();
 
@@ -83,6 +100,8 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         }
 
     }
+
+
 
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(this);
@@ -208,58 +227,60 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onResume() {
         super.onResume();
-        if (lightSensor != null) {
-            sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
+//        if (lightSensor != null) {
+//            sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        }
     }
 
     @Override
     public void onPause() {
-        sensorManager.unregisterListener(this);
-        if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
         super.onPause();
+        sensorManager.unregisterListener(msel);
+//        sensorManager.unregisterListener(this);
+//        if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
+//        super.onPause();
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-            float lightVal = event.values[0];
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//        if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+//            float lightVal = event.values[0];
+//
+//            //if light is 1/10 of maximum brightness and not already alive
+//            if (lightVal < maxLight*0.0001) {
+//                if (lightThread == null || !lightThread.isAlive()){
+//                    Log.d("LIGHT_MAX", "MaxLight: " + maxLight);
+//                    Log.d("LIGHT_VALS", "Light: " + lightVal);
+//                    lightThread = new Thread(new LightComputation(handler));
+//                    lightThread.start();
+//                }
+//            } else {
+//                if (lightThread != null) lightThread.interrupt();   // stop current thread
+//                lightThread = null; // remove reference to thread
+//            }
+//        }   //if Sensor.TYPE_LIGHT
+//    }   // onSensorChanged
 
-            //if light is 1/10 of maximum brightness and not already alive
-            if (lightVal < maxLight*0.0001) {
-                if (lightThread == null || !lightThread.isAlive()){
-                    Log.d("LIGHT_MAX", "MaxLight: " + maxLight);
-                    Log.d("LIGHT_VALS", "Light: " + lightVal);
-                    lightThread = new Thread(new LightComputation(handler));
-                    lightThread.start();
-                }
-            } else {
-                if (lightThread != null) lightThread.interrupt();   // stop current thread
-                lightThread = null; // remove reference to thread
-            }
-        }   //if Sensor.TYPE_LIGHT
-    }   // onSensorChanged
-
-    private class LightComputation implements Runnable {
-
-        private Handler h;
-        public LightComputation(Handler ha) { this.h = ha; }
-
-        @Override
-        public void run() {
-            // make toast and wait before displaying another toast
-            h.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, "Scene may be dark", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            //wait seconds
-            SystemClock.sleep(5000);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {}
+//    private class LightComputation implements Runnable {
+//
+//        private Handler h;
+//        public LightComputation(Handler ha) { this.h = ha; }
+//
+//        @Override
+//        public void run() {
+//            // make toast and wait before displaying another toast
+//            h.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Toast.makeText(context, "Scene may be dark", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//
+//            //wait seconds
+//            SystemClock.sleep(5000);
+//        }
+//    }
+//
+//    @Override
+//    public void onAccuracyChanged(Sensor sensor, int i) {}
 }

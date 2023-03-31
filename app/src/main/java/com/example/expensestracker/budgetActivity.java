@@ -2,12 +2,18 @@ package com.example.expensestracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +25,11 @@ public class budgetActivity extends AppCompatActivity {
     private int budget = 0;
     private int budgetRemaining = 0;
     private int progress = 0;
+    private ImageView homeClick;
+
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private MySensorEventListener msel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +38,10 @@ public class budgetActivity extends AppCompatActivity {
         tvBudgetRemaining = findViewById(R.id.tv_budget_remaining);
         progressBar = findViewById(R.id.progress_bar);
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         etBudget.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -51,6 +66,15 @@ public class budgetActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        homeClick = (ImageView) findViewById((R.id.homeClick));
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(budgetActivity.this, MainActivity.class);
+                startActivity(homePage);
+            }
         });
 
     }
@@ -79,6 +103,17 @@ public class budgetActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(msel);
     }
 
 }

@@ -4,11 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,11 +27,21 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
     private CustomAdapter customAdapter;
     private MyHelper helper;
     private LinearLayoutManager mLayoutManager;
+    private ImageView homeClick;
+
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private MySensorEventListener msel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_list);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         myRecycler = (RecyclerView) findViewById(R.id.purchaseRecyclerView);
         db = new MyDatabase(this);
@@ -69,6 +84,15 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         myRecycler.setLayoutManager(mLayoutManager);
+
+        homeClick = (ImageView) findViewById((R.id.homeClick));
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(PurchaseList.this, MainActivity.class);
+                startActivity(homePage);
+            }
+        });
     }
 
     @Override
@@ -80,6 +104,17 @@ public class PurchaseList extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(this,
                 "row " + (1+position) + ":  " + purchaseAmount.getText() +" "+purchaseCurrency.getText() + " " + purchaseType.getText(),
                 Toast.LENGTH_LONG).show();
+    }
+
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(msel);
     }
 
 }
