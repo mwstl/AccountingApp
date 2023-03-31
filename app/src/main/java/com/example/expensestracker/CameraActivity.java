@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class CameraActivity extends AppCompatActivity implements SensorEventListener {
+public class CameraActivity extends AppCompatActivity {
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     PreviewView previewView;
@@ -56,6 +56,9 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     private Handler handler;
     private SensorManager sensorManager;
     private Sensor lightSensor;
+    private MySensorEventListener msel;
+
+    private ImageView homeClick;
     float maxLight;
     Thread lightThread;
     String fileLocation;
@@ -77,6 +80,20 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         maxLight = lightSensor.getMaximumRange();
 
         // Thread handler
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        homeClick = (ImageView) findViewById((R.id.homeClick));
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(CameraActivity.this, MainActivity.class);
+                startActivity(homePage);
+            }
+        });
+
         handler = new Handler();
 
         // Check for camera permissions
@@ -87,6 +104,8 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
     }
+
+
 
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(this);
@@ -221,9 +240,9 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     public void onResume() {
         // Register light sensor
         super.onResume();
-        if (lightSensor != null) {
-            sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
+//        if (lightSensor != null) {
+//            sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        }
     }
 
     @Override
@@ -232,6 +251,10 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         sensorManager.unregisterListener(this);
         if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
         super.onPause();
+        sensorManager.unregisterListener(msel);
+//        sensorManager.unregisterListener(this);
+//        if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
+//        super.onPause();
     }
 
     @Override

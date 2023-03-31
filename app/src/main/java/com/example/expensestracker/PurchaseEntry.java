@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +49,12 @@ public class PurchaseEntry extends AppCompatActivity {
     private Context context;
     private Handler handler;
 
+    private ImageView homeClick;
+
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private MySensorEventListener msel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +64,25 @@ public class PurchaseEntry extends AppCompatActivity {
         context = this;
 
         // Reference to UI elements
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         entryAmount = (EditText) findViewById(R.id.amount_edit_text);
         entryCurrency = (EditText) findViewById(R.id.currency_edit_text);
         entryNote = (EditText) findViewById(R.id.note_edit_text);
         typeRadioGroup = (RadioGroup) findViewById(R.id.typeRadioGroup);
+        homeClick = (ImageView) findViewById((R.id.homeClick));
         photoViewer = (ImageView) findViewById(R.id.photoView);
+
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(PurchaseEntry.this, MainActivity.class);
+                startActivity(homePage);
+            }
+        });
 
         // Initialize database object
         db = new MyDatabase(this);
@@ -73,6 +95,8 @@ public class PurchaseEntry extends AppCompatActivity {
 //        List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
 //        storageVolume = storageVolumes.get(0);
     }
+
+
 
     public void addEntry(View v) {
         // Initialize string objects to store text view input
@@ -254,6 +278,10 @@ public class PurchaseEntry extends AppCompatActivity {
             Log.d("ERROR", e.getMessage());
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
 //    @Override
 //    protected void onResume() {
@@ -267,6 +295,7 @@ public class PurchaseEntry extends AppCompatActivity {
     @Override
     protected void onPause() {
         // Remove any alive/dead threads
+        sensorManager.unregisterListener(msel);
         if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
         super.onPause();
     }

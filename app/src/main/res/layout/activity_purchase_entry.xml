@@ -19,21 +19,11 @@
             android:id="@+id/homeClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="7dp"
             android:background="@drawable/circleshape"
             app:srcCompat="@drawable/baseline_home_24"
+            />
 
-            />
-        <ImageView
-            android:id="@+id/blackClick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:background="@drawable/circleshape"
-            app:srcCompat="@drawable/baseline_close_24"
-            android:translationY="-34dp"
-            android:translationX="330dp"
-            />
 
         <RadioGroup
             android:id="@+id/typeRadioGroup"

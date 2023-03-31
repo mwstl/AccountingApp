@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginActivity extends AppCompatActivity implements SensorEventListener {
+public class LoginActivity extends AppCompatActivity {
 
     EditText name, psd;
     Button loginBtn;
@@ -30,7 +30,12 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
     SharedPreferences.Editor editor;
     private SensorManager sensorManager;
     private Sensor lightSensor;
-    private WindowManager.LayoutParams layoutParams;
+    private MySensorEventListener msel;
+    Thread vibrateThread;
+    private Vibrator vibrator;
+    private Context context;
+    private Handler handler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,12 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         // Window layout parameters object for brightness control
         layoutParams = getWindow().getAttributes();
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+       // layoutParams = getWindow().getAttributes();
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        handler = new Handler();
 
         // References to UI elements
         name = findViewById(R.id.usernameEditText);
@@ -90,6 +101,8 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
     @Override
     protected void onPause() {
         super.onPause();
+        sensorManager.unregisterListener(msel);
+        if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
         // Release sensor, free resources
         sensorManager.unregisterListener(this);
     }
@@ -112,7 +125,53 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
         }
    }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//        float lightValue = event.values[0];
+//
+//        if (lightValue < 10) {
+//            // Brightness is less than 10
+//            layoutParams.screenBrightness = 0;
+//            getWindow().setAttributes(layoutParams);
+//            getWindow().getDecorView().setBackgroundColor(Color.rgb(132,147,169));
+//        } else {
+////            if (lightValue >= 10 && lightValue < 100) {
+//            // Brightness is greater than 10
+//            layoutParams.screenBrightness = 1;
+//            getWindow().setAttributes(layoutParams);
+//            getWindow().getDecorView().setBackgroundColor(Color.rgb(199,219,248));
+//        }
+////        else {
+////            // Brightness is greater than or equal to 100
+////            getWindow().getDecorView().setBackgroundColor(Color.YELLOW);
+////        }
+//   }
+//
+//    @Override
+//    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+//
+//    }
+
+    private class VibrateComputation implements Runnable {
+        private Handler h;
+        public VibrateComputation(Handler ha) {
+            this.h = ha;
+        }
+
+        @Override
+        public void run() {
+            if (vibrator.hasVibrator()) {
+                vibrator.vibrate(100);
+            }
+
+            h.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Wrong username/password", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 }

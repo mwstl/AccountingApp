@@ -2,9 +2,16 @@ package com.example.expensestracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,20 +24,40 @@ public class PurchaseEntryDetails extends AppCompatActivity {
     int purchaseID;
     private MyDatabase db;
 
+    private ImageView homeClick;
+
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private MySensorEventListener msel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_entry_details);
 
         // References to UI elements
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        msel = new MySensorEventListener(getWindow());
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         amountTextView = findViewById(R.id.purchaseAmount);
         currencyTextView = findViewById(R.id.purchaseCurrency);
         typeTextView = findViewById(R.id.purchaseType);
         noteTextView = findViewById(R.id.purchaseNote);
         dateTextView = findViewById(R.id.purchaseDate);
         photoViewer = findViewById(R.id.entryImage);
+        homeClick = (ImageView) findViewById((R.id.homeClick));
 
         // Retrieve purchase id from intent extra
+        homeClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homePage = new Intent(PurchaseEntryDetails.this, MainActivity.class);
+                startActivity(homePage);
+            }
+        });
+
         purchaseID = getIntent().getIntExtra("purchase_id", 1);
         // Debug help
 //        Log.d("PURCHASE ID", "ID: " + purchaseID);
@@ -74,5 +101,17 @@ public class PurchaseEntryDetails extends AppCompatActivity {
 
             cursor.moveToNext();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(msel);
     }
 }

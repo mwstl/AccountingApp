@@ -16,22 +16,13 @@
             android:id="@+id/homeClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="7dp"
             android:background="@drawable/circleshape"
             app:srcCompat="@drawable/baseline_home_24"
             android:translationX="20dp"
-            android:translationY="20dp"
+            android:translationY="13dp"
             />
-        <ImageView
-            android:id="@+id/blackClick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:background="@drawable/circleshape"
-            app:srcCompat="@drawable/baseline_close_24"
-            android:translationY="-13dp"
-            android:translationX="355dp"
-            />
+
 
         <view
             android:id="@+id/previewView"
@@ -39,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="25dp"
             android:layout_weight="9" />
 
         <Button

@@ -7,11 +7,29 @@
     android:background="#C7DBF8"
     tools:context=".PurchaseList">
 
+
+    <ImageView
+        android:id="@+id/homeClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="355dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/circleshape"
+
+        android:padding="7dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_home_24" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/purchaseRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/med_gap"
+
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
