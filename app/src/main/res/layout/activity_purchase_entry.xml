@@ -55,7 +55,8 @@
             android:inputType="numberDecimal"
             android:minWidth="@dimen/touch_size"
             android:minHeight="@dimen/touch_size"
-            android:paddingHorizontal="@dimen/med_gap" />
+            android:paddingHorizontal="@dimen/med_gap"
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/currency_edit_text"
@@ -64,7 +65,8 @@
             android:hint="Currency"
             android:minWidth="@dimen/touch_size"
             android:minHeight="@dimen/touch_size"
-            android:paddingHorizontal="@dimen/med_gap" />
+            android:paddingHorizontal="@dimen/med_gap"
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/note_edit_text"
@@ -73,7 +75,8 @@
             android:hint="Note"
             android:minWidth="@dimen/touch_size"
             android:minHeight="@dimen/touch_size"
-            android:paddingHorizontal="@dimen/med_gap" />
+            android:paddingHorizontal="@dimen/med_gap"
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/addPhotoButton"

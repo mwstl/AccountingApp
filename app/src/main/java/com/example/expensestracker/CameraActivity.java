@@ -19,13 +19,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,8 +31,6 @@ import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-import java.io.File;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -83,7 +79,6 @@ public class CameraActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         msel = new MySensorEventListener(getWindow());
-        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         homeClick = (ImageView) findViewById((R.id.homeClick));
         homeClick.setOnClickListener(new View.OnClickListener() {
@@ -147,10 +142,12 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void capturePhoto(View v) {
+        // Based on course demo app
         long timeStamp = System.currentTimeMillis();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timeStamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+
 
         imageCapture.takePicture(
                 new ImageCapture.OutputFileOptions.Builder(
@@ -163,6 +160,11 @@ public class CameraActivity extends AppCompatActivity {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Toast.makeText(CameraActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
+                        // Save file location as string
+                        fileLocation = outputFileResults.getSavedUri().toString();
+//                        Log.d("OUTPUTFILERESULTS", outputFileResults.getSavedUri().toString());
+//                        Log.d("FILELOCATION", fileLocation);
+                        returnCapture();
                     }
 
                     @Override
@@ -172,58 +174,12 @@ public class CameraActivity extends AppCompatActivity {
                 });
     }
 
-    public void capturePhotoButton(View v) {
-        // Camera code based on course demo app
-        long timestamp = System.currentTimeMillis();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
-
-        // Image file location and name
-//        fileLocation = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + timestamp + ".jpeg";
-        fileLocation = "file:///storage/emulated/0/Pictures/" + timestamp + ".jpeg";
-        // Debug help
-//        Log.d("IMAGE LOCATION", "Media Location: " + fileLocation);
-
-        imageCapture.takePicture(
-                new ImageCapture.OutputFileOptions.Builder(
-                        getContentResolver(),
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        contentValues
-                ).build(),
-                getExecutor(),
-                new ImageCapture.OnImageSavedCallback() {
-                    @Override
-                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        Toast.makeText(CameraActivity.this, "Captured successfully", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(@NonNull ImageCaptureException exception) {
-                        Toast.makeText(CameraActivity.this, "Error: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        // Return to purchase entry activity
-        returnCapture();
-    }
-
-    public void finishCapture(View v) {
-        Intent i = new Intent(this, PurchaseEntry.class);
-        startActivity(i);
-    }
-
     public void returnCapture() {
         // Return to purchase entry activity with file location string
         Intent returnIntent = new Intent();
         returnIntent.putExtra("photo", fileLocation);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
-    }
-
-    public void selectImage(View v) {
-        Intent selectedImage = new Intent(Intent.ACTION_GET_CONTENT);
     }
 
     private boolean allPermissionsGranted() {
@@ -238,23 +194,16 @@ public class CameraActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        // Register light sensor
         super.onResume();
-//        if (lightSensor != null) {
-//            sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-//        }
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void onPause() {
         // Release light sensor and thread
-//        sensorManager.unregisterListener(this);
         if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
-        super.onPause();
         sensorManager.unregisterListener(msel);
-//        sensorManager.unregisterListener(this);
-//        if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
-//        super.onPause();
+        super.onPause();
     }
 
 //    @Override

@@ -39,7 +39,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/buttonshape"
-            android:onClick="capturePhotoButton"
+            android:onClick="capturePhoto"
             android:text="Capture" />
     </LinearLayout>
 

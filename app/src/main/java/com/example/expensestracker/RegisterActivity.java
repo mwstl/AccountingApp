@@ -35,7 +35,6 @@ public class RegisterActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         msel = new MySensorEventListener(getWindow());
-        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         // Cancel button listener
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
 

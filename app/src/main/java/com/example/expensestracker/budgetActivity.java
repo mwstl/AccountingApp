@@ -40,10 +40,11 @@ public class budgetActivity extends AppCompatActivity {
         tvBudgetRemaining = findViewById(R.id.tv_budget_remaining);
         progressBar = findViewById(R.id.progress_bar);
 
+        // Initialize sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         msel = new MySensorEventListener(getWindow());
-        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         etBudget.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -52,7 +53,7 @@ public class budgetActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
-                    //
+                    // Calculate remaining budget
                     budget = Integer.parseInt(s.toString());
                     budgetRemaining = budget;
                     tvBudgetRemaining.setText("Budget remaining: $" + budgetRemaining);
@@ -119,6 +120,8 @@ public class budgetActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
+        // Register listener
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
 

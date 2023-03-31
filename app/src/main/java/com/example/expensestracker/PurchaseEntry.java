@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,7 +28,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,7 +49,6 @@ public class PurchaseEntry extends AppCompatActivity {
     private ImageView photoViewer;
     MyDatabase db;
     String photoURI;
-//    private StorageVolume storageVolume;
     Thread vibrateThread;
     private Vibrator vibrator;
     private Context context;
@@ -90,10 +95,6 @@ public class PurchaseEntry extends AppCompatActivity {
         // Initialize vibrator service and thread handler
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         handler = new Handler();
-
-//        StorageManager storageManager = (StorageManager) getSystemService(STORAGE_SERVICE);
-//        List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
-//        storageVolume = storageVolumes.get(0);
     }
 
 
@@ -105,7 +106,6 @@ public class PurchaseEntry extends AppCompatActivity {
         String note = entryNote.getText().toString();
         RadioButton selectedButton = findViewById(typeRadioGroup.getCheckedRadioButtonId());
         String type = selectedButton.getText().toString();
-
         // Debug help
 //        Log.d("RADIO BUTTON", "Chosen radio btn: " + findViewById(typeRadioGroup.getCheckedRadioButtonId()));
 
@@ -123,10 +123,8 @@ public class PurchaseEntry extends AppCompatActivity {
         // Check whether entry is expense or income
         // Depending, add "-" or "+" before string
         if (selectedButton == findViewById(R.id.expenseRadioButton)) {
-//            Log.d("SELECTED BUTTON", "Button: expenseRadioButton");
             amount = "-" + entryAmount.getText().toString();
         } else if (selectedButton == findViewById(R.id.incomeRadioButton)) {
-//            Log.d("SELECTED BUTTON", "Button: incomeRadioButton");
             amount = "+" + entryAmount.getText().toString();
         }
 
@@ -164,73 +162,14 @@ public class PurchaseEntry extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void takePhoto(View v) {
-        Intent i = new Intent(this, CameraActivity.class);
-        startActivity(i);
-    }
-
     public void capturePhotoResult(View v) {
         // Start camera activity for result
         Intent i = new Intent(this, CameraActivity.class);
         startActivityForResult(i, LAUNCH_CAMERA_ACTIVITY);
     }
-    private static int RESULT_IMAGE_CLICK = 1;
-    private Uri cameraImageUri;
-    public void photoMediaStore(View v) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraImageUri = getOutputMediaFileUri(1);
-
-        // set the image file name
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
-        startActivityForResult(intent, RESULT_IMAGE_CLICK);
-    }
-
-    /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type) {
-
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    // Create a File for saving an image or video
-    private static File getOutputMediaFile(int type) {
-
-        // Check that the SDCard is mounted
-        File mediaStorageDir = new File(
-                Environment.getExternalStorageDirectory(), Environment.DIRECTORY_PICTURES);
-
-        // Create the storage directory(MyCameraVideo) if it does not exist
-        if (!mediaStorageDir.exists()) {
-
-            if (!mediaStorageDir.mkdirs()) {
-
-                Log.e("Item Attachment",
-                        "Failed to create directory MyCameraVideo.");
-
-                return null;
-            }
-        }
-        java.util.Date date = new java.util.Date();
-        long timestamp = System.currentTimeMillis();
-
-        File mediaFile;
-
-        if (type == 1) {
-
-            // For unique video file name appending current timeStamp with file
-            // name
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator + timestamp + ".jpg");
-
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
 
     public void selectPhotoResult(View v) {
         // Open file browser for result
-//        Uri uri = Uri.parse(storageVolume.getDirectory() + "")
-//        Uri imageUri = Uri.parse(String.valueOf(Environment.getExternalStorageDirectory()));
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("image/*");
         startActivityForResult(i, SELECT_IMAGE);
@@ -247,6 +186,8 @@ public class PurchaseEntry extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(this, "Captured photo", Toast.LENGTH_SHORT).show();
                     photoURI = data.getStringExtra("photo");
+                    Bitmap myBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(photoURI));
+                    photoViewer.setImageBitmap(myBitmap);
                 }
             } else if (requestCode == SELECT_IMAGE) {
                 // If user is selecting photo from device storage, save photoURI location
@@ -260,37 +201,22 @@ public class PurchaseEntry extends AppCompatActivity {
                     photoURI = data.getData().toString();
                     Log.d("PHOTO_URI", photoURI);
                     Toast.makeText(this, "Successfully selected image", Toast.LENGTH_SHORT).show();
+
+                    photoViewer.setImageURI(null);
+                    photoViewer.setImageURI(Uri.parse(photoURI));
                 }
-            } else if (requestCode == RESULT_IMAGE_CLICK) {
-                // Here you have the ImagePath which you can set to you image view
-                Log.e("Image Name", cameraImageUri.getPath());
-
-                Bitmap myBitmap = BitmapFactory.decodeFile(cameraImageUri.getPath());
-
-                photoViewer.setImageBitmap(myBitmap);
             }
-
-            photoViewer.setImageURI(null);
-            photoViewer.setImageURI(Uri.parse(photoURI));
         } catch (Exception e) {
             // If there is an error
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.d("ERROR", e.getMessage());
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (photoURI != "" || photoURI != null) {
-//            Log.d("PHOTOURI", photoURI);
-////            photoViewer.setImageURI(Uri.parse(photoURI));
-//        }
-//    }
 
     @Override
     protected void onPause() {

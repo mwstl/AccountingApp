@@ -30,7 +30,8 @@
         android:drawableLeft="@drawable/baseline_person_24"
         android:drawablePadding="10dp"
         android:hint="Username"
-        android:minHeight="@dimen/touch_size" />
+        android:minHeight="@dimen/touch_size"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -40,7 +41,8 @@
         android:drawableLeft="@drawable/baseline_lock_24"
         android:drawablePadding="10dp"
         android:hint="Password"
-        android:minHeight="@dimen/touch_size" />
+        android:minHeight="@dimen/touch_size"
+        android:singleLine="true" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginBtn"

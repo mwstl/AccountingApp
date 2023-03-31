@@ -13,6 +13,7 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="180dp"
         android:text="Register Your Account"
+        android:textAlignment="textStart"
         android:textSize="25dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +54,8 @@
         android:hint="Your Name"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/txtRegisterUserName"
-        app:layout_constraintTop_toTopOf="@+id/txtRegisterUserName" />
+        app:layout_constraintTop_toTopOf="@+id/txtRegisterUserName"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/edRegisterPassword"
@@ -64,7 +66,8 @@
         android:hint="Your Password"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/edRegisterUsername"
-        app:layout_constraintTop_toTopOf="@+id/txtRegisterPassword" />
+        app:layout_constraintTop_toTopOf="@+id/txtRegisterPassword"
+        android:singleLine="true" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnOK"

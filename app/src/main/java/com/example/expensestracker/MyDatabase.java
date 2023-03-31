@@ -18,7 +18,6 @@ public class MyDatabase {
     public MyDatabase (Context c){
         context = c;
         helper = new MyHelper(context);
-//        helper.onUpgrade(helper.getWritableDatabase(), helper.getWritableDatabase().getVersion(), helper.getWritableDatabase().getVersion()+1);
     }
 
     public long insertData (String amount, String currency, String type, String note, String img, String date) {
@@ -55,67 +54,11 @@ public class MyDatabase {
     public Cursor getIdData(int id) {
         // Retrieve data based on id
         SQLiteDatabase db = helper.getWritableDatabase();
-        String[] columns = {Constants.UID, Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.NOTE, Constants.DATE};
+        String[] columns = {Constants.UID, Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.NOTE, Constants.IMAGE, Constants.DATE};
         String selection = Constants.UID + "='" + id + "'";
         Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, null, null, null, null);
         return cursor;
     }
-
-    public Purchase getDataID(int id) {
-        // Retrieve Purchase object based on id
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String selection = "_id = ?";
-        String[] selectionArgs = {String.valueOf(id)};
-        String[] columns = {Constants.UID, Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.IMAGE, Constants.NOTE};
-        Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
-
-        int idx1 = cursor.getColumnIndex(Constants.AMOUNT);
-        int idx2 = cursor.getColumnIndex(Constants.CURRENCY);
-        int idx3 = cursor.getColumnIndex(Constants.TYPE);
-        int idx4 = cursor.getColumnIndex(Constants.NOTE);
-        int idx5 = cursor.getColumnIndex(Constants.DATE);
-
-        Purchase entry = new Purchase();
-
-        if (cursor.moveToFirst()) {
-            String entryAmount = cursor.getString(idx1);
-            String entryCurrency = cursor.getString(idx2);
-            String entryType = cursor.getString(idx3);
-            String entryNote = cursor.getString(idx4);
-            String date = cursor.getString(idx5);
-
-            entry = new Purchase(id, entryAmount,entryCurrency, Integer.parseInt(entryType), entryNote, date);
-        }
-
-//        if (cursor != null) cursor.moveToFirst();
-//        Purchase entry = new Purchase(Integer.parseInt(cursor.getString(0)),
-//                cursor.getString(idx1), //amount
-//                cursor.getString(idx2), //currency
-//                Integer.parseInt(cursor.getString(idx3)), //type
-//                cursor.getString(idx4)  //note
-//                );
-        cursor.close();
-        return entry;
-    }
-
-    public String getSelectedData(String type) {
-        //select plants from database of type 'herb'
-        SQLiteDatabase db = helper.getWritableDatabase();
-        String[] columns = {Constants.AMOUNT, Constants.CURRENCY, Constants.TYPE, Constants.NOTE};
-
-        String selection = Constants.TYPE + "='" +type+ "'";  //Constants.TYPE = 'type'
-        Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, null, null, null, null);
-
-        StringBuffer buffer = new StringBuffer();
-        while (cursor.moveToNext()) {
-            int index1 = cursor.getColumnIndex(Constants.AMOUNT);
-            int index2 = cursor.getColumnIndex(Constants.TYPE);
-            String amount = cursor.getString(index1);
-            String entryType = cursor.getString(index2);
-            buffer.append(amount + " " + entryType + "\n");
-        }
-        return buffer.toString();
-    } //query button
 
     public Cursor getSelectedDataCursor(String type) {
         // Retrieve data based on purchase type
@@ -141,8 +84,6 @@ public class MyDatabase {
             int idx2 = cursor.getColumnIndex(Constants.TYPE);
             String amount = cursor.getString(idx1);
             double amt = Double.parseDouble(amount);
-            // Debug help
-//            Log.d("DOUBLE PURCHASE TESTING", "" + amt);
             String type = cursor.getString(idx2);
 
             // Add to array list

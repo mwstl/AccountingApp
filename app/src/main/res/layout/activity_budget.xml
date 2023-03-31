@@ -27,9 +27,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="48dp"
         android:layout_marginBottom="566dp"
-
         android:text="Setup and Calculation Your Budget"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:singleLine="true"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/carView"
@@ -51,6 +51,7 @@
             android:width="350dp"
             android:layout_marginLeft="15dp"
             android:hint="Set Budget for this month: "
+            android:inputType="numberDecimal"
             android:translationY="20dp" />
 
         <TextView
