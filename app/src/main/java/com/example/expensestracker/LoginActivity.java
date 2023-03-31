@@ -45,12 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize sensor manager and light sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        // Window layout parameters object for brightness control
-        layoutParams = getWindow().getAttributes();
+        // Sensor to change window brightness
         msel = new MySensorEventListener(getWindow());
-        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-
-       // layoutParams = getWindow().getAttributes();
+        // Vibrator service and thread handler
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         handler = new Handler();
 
@@ -94,64 +91,17 @@ public class LoginActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        // Register light sensor
-        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        // Register sensor
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        // Release sensor, free resources
         sensorManager.unregisterListener(msel);
         if (vibrateThread != null) { vibrateThread.interrupt(); }; vibrateThread = null;
-        // Release sensor, free resources
-        sensorManager.unregisterListener(this);
     }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        // Get light values from light sensor
-        float lightValue = event.values[0];
-
-        if (lightValue < 10) {
-            // Brightness is less than 10, set screen brightness to darkest
-            layoutParams.screenBrightness = 0;
-            getWindow().setAttributes(layoutParams);
-            getWindow().getDecorView().setBackgroundColor(Color.rgb(132,147,169));
-        } else {
-            // Brightness is greater than 10, set brightness to brightest
-            layoutParams.screenBrightness = 1;
-            getWindow().setAttributes(layoutParams);
-            getWindow().getDecorView().setBackgroundColor(Color.rgb(199,219,248));
-        }
-   }
-
-
-//    @Override
-//    public void onSensorChanged(SensorEvent event) {
-//        float lightValue = event.values[0];
-//
-//        if (lightValue < 10) {
-//            // Brightness is less than 10
-//            layoutParams.screenBrightness = 0;
-//            getWindow().setAttributes(layoutParams);
-//            getWindow().getDecorView().setBackgroundColor(Color.rgb(132,147,169));
-//        } else {
-////            if (lightValue >= 10 && lightValue < 100) {
-//            // Brightness is greater than 10
-//            layoutParams.screenBrightness = 1;
-//            getWindow().setAttributes(layoutParams);
-//            getWindow().getDecorView().setBackgroundColor(Color.rgb(199,219,248));
-//        }
-////        else {
-////            // Brightness is greater than or equal to 100
-////            getWindow().getDecorView().setBackgroundColor(Color.YELLOW);
-////        }
-//   }
-//
-//    @Override
-//    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-//
-//    }
 
     private class VibrateComputation implements Runnable {
         private Handler h;
@@ -161,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            // If there is a vibrate module, vibrate
             if (vibrator.hasVibrator()) {
                 vibrator.vibrate(100);
             }
@@ -169,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void run() {
+                    // Post error message to UI
                     Toast.makeText(context, "Wrong username/password", Toast.LENGTH_SHORT).show();
                 }
             });

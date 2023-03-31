@@ -33,11 +33,12 @@
             android:layout_marginTop="25dp"
             android:layout_weight="9" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/captureCameraButton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@drawable/buttonshape"
             android:onClick="capturePhotoButton"
             android:text="Capture" />
     </LinearLayout>

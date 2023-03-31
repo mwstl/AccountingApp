@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private Button addPurchaseButton, viewPurchasesButton,logoutBtn,budgetBtn;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private MySensorEventListener msel;
@@ -37,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         editor = preferences.edit();
 
+        // Sensors to sense ambient light and change screen brightness
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         msel = new MySensorEventListener(getWindow());
-        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         // References to UI text views and buttons
         balanceTextView =  (TextView) findViewById(R.id.balanceTextView);
@@ -74,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         // Calculate/update total sum from expense/income
         calculateBalance();
+        // Light sensor
+        sensorManager.registerListener(msel, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         super.onResume();
     }
 
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // Release sensor
         sensorManager.unregisterListener(msel);
     }
 

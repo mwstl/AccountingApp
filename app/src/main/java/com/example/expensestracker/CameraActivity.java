@@ -248,7 +248,7 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         // Release light sensor and thread
-        sensorManager.unregisterListener(this);
+//        sensorManager.unregisterListener(this);
         if (lightThread != null) { lightThread.interrupt(); }; lightThread = null;
         super.onPause();
         sensorManager.unregisterListener(msel);
@@ -257,7 +257,7 @@ public class CameraActivity extends AppCompatActivity {
 //        super.onPause();
     }
 
-    @Override
+//    @Override
     public void onSensorChanged(SensorEvent event) {
         // Check for light sensor changes
         if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
@@ -300,6 +300,6 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+//    @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
 }
